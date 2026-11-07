@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylgframework"
+version = "0.1.0"
+description = "Local Group barycentre with propagated observational uncertainty (Monte Carlo)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Moisés Frutos Plaza" }]
+keywords = ["Local Group", "barycentre", "Monte Carlo", "astropy", "REBOUND"]
+dependencies = ["numpy", "pandas", "astropy>=7.2"]
+
+[project.optional-dependencies]
+rebound = ["rebound"]
+analysis = ["scipy", "scikit-learn", "diptest", "matplotlib"]
+test = ["pytest", "rebound"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+markers = ["slow: reproduces published values with N = 1000 (seconds to a minute)"]
+testpaths = ["tests"]
