@@ -33,8 +33,9 @@ class Fiducial:
 WU = Fiducial(
     name="wu2026",
     reference="Wu, Huang, Zhang, Sun & Shao (2026), ApJ 1001, L19, Table 1, "
-              "doi:10.3847/2041-8213/ae5799",
-    notes="Follows the framework of Sawala et al. (2025).",
+              "doi:10.3847/2041-8213/ae5799 (arXiv:2603.22863)",
+    notes="Follows the framework of Sawala et al. (2025). RA/Dec are the usual catalogued "
+          "centres (McConnachie 2012), NOT taken from the paper table (to be verified).",
     obs={
         "MilkyWay": dict(m=1.0e12, c=10.0),
         "M31": dict(m=1.3e12, c=15.0, ra=10.6847, dec=41.2690, mu=24.407,
