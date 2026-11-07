@@ -9,6 +9,10 @@ member galaxies, and returns the barycentre together with its uncertainty region
 > Frutos Plaza, M. (2026). *Membership Systematics of the Local Group Barycentre: Uncertainty Region, Dependence
 > on Member Galaxies, and Consistency with the CMB Dipole.* (manuscript; data and code at doi:10.5281/zenodo.23440772)
 
+## Status
+
+[![tests](https://github.com/mfrutosp/pylgframework/actions/workflows/tests.yml/badge.svg)](https://github.com/mfrutosp/pylgframework/actions/workflows/tests.yml)
+
 ## Installation
 
 ```bash
