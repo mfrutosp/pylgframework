@@ -7,7 +7,7 @@ single-line centre-of-mass calculation with a Monte Carlo that propagates the ob
 member galaxies, and returns the barycentre together with its uncertainty region.
 
 > Frutos Plaza, M. (2026). *Membership Systematics of the Local Group Barycentre: Uncertainty Region, Dependence
-> on Member Galaxies, and Consistency with the CMB Dipole.* (manuscript; data and code at doi:10.5281/zenodo.23440772)
+> on Member Galaxies, and Consistency with the CMB Dipole.* (manuscript; data and code at [doi:10.5281/zenodo.23440771](https://doi.org/10.5281/zenodo.23440771))
 
 ## Status
 
@@ -15,7 +15,18 @@ member galaxies, and returns the barycentre together with its uncertainty region
 
 ## Installation
 
+Requires Python ≥ 3.11
+
 ```bash
+pip install pylgframework             # core: numpy, pandas, astropy
+pip install "pylgframework[rebound]"  # adapter for REBOUND simulations
+```
+
+## Installation (for developers)
+
+```bash
+git clone https://github.com/mfrutosp/pylgframework
+cd pylgframework
 pip install -e .                 # core: numpy, pandas, astropy
 pip install -e ".[rebound]"      # adapter for REBOUND simulations
 pip install -e ".[test]"         # development and tests
@@ -62,13 +73,12 @@ public interface. The test suite reproduces Table 1 and Sects. 3 and 4 of the ma
 pytest            # fast tests
 ```
 
-Verified against the published values (Table 1 of the manuscript) with astropy 7.2.0 (Linux, Python 3.12)
-and astropy 8.0.2 (Linux, Python 3.12; Windows, Python 3.11).
+An example using REBOUND adapter is here [tests/test_rebound_simulation.py](https://github.com/mfrutosp/pylgframework/blob/main/tests/test_rebound_simulation.py).
 
 ## References
 
 The bibliography of the manuscript, including the sources of every fiducial and of the CMB dipole, is in
-[`docs/references.bib`](docs/references.bib).
+[`docs/references.bib`](https://github.com/mfrutosp/pylgframework/blob/main/docs/references.bib).
 
 ## License
 
