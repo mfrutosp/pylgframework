@@ -16,6 +16,16 @@ class Comparison:
     offset_sigma: float               # |component along the major axis of a| / a1
     dvcmb: dict                       # median v_CMB(b) - median v_CMB(a), per membership (km/s)
 
+    def body_offset(self, body, membership=None, column="speed_kms"):
+        """Paired difference (b - a) of a body's motion relative to the barycentre.
+
+        Realization i of both fiducials uses the same random draw, so the difference is
+        free of Monte Carlo noise. Returns the (16th, 50th, 84th) percentiles.
+        """
+        a = self.a.relative_to_barycentre(body, membership)[column].to_numpy()
+        b = self.b.relative_to_barycentre(body, membership)[column].to_numpy()
+        return tuple(np.percentile(b - a, [16, 50, 84]))
+
     def __repr__(self):
         d = ", ".join(f"{k}: {v:+.0f}" for k, v in self.dvcmb.items())
         return (f"Comparison({self.a.fiducial} -> {self.b.fiducial}): offset = {self.offset_kpc:.1f} kpc "

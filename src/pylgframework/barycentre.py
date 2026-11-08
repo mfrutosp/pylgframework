@@ -86,6 +86,9 @@ class Result:
     seed: int
     membership: str
     sigmas: Any
+    masses: Optional[np.ndarray] = None       # (K, 4) Msun, after ``zero_mass``
+    pos: Optional[np.ndarray] = None          # (K, 4, 3) kpc, Galactocentric
+    vel: Optional[np.ndarray] = None          # (K, 4, 3) km/s, MW rest frame
 
     @property
     def positions(self):
@@ -121,6 +124,35 @@ class Result:
     def vcmb(self, membership="4"):
         """(16th, 50th, 84th percentile) of the barycentre speed w.r.t. the CMB, km/s."""
         return tuple(np.percentile(self.cloud[f"vcmb_{membership}_kms"], [16, 50, 84]))
+
+    def relative_to_barycentre(self, body, membership=None):
+        """Position and velocity of ``body`` relative to the barycentre of ``membership``.
+
+        One row per realization. ``body`` is one of ``NAMES`` (``"MilkyWay"``, ``"M31"``,
+        ``"M33"``, ``"LMC"``); ``membership`` defaults to the one of this result and may be
+        any of ``"2"``, ``"3M"``, ``"3L"``, ``"4"``. ``body`` does not need to be a member.
+
+        Columns: ``distance_kpc``, ``speed_kms``, and the radial (``v_rad_kms``, positive
+        when receding) and tangential (``v_tan_kms``) components with respect to the barycentre.
+        """
+        if self.pos is None:
+            raise ValueError("this Result does not carry the member phase space")
+        j = NAMES.index(body)
+        rb, vb = _bc(self.masses, self.pos, self.vel, MEMBERSHIPS[membership or self.membership])
+        dr, dv = self.pos[:, j] - rb, self.vel[:, j] - vb
+        d = np.linalg.norm(dr, axis=1)
+        sp = np.linalg.norm(dv, axis=1)
+        vr = (dr * dv).sum(1) / d
+        return pd.DataFrame({"distance_kpc": d, "speed_kms": sp, "v_rad_kms": vr,
+                             "v_tan_kms": np.sqrt(np.maximum(sp**2 - vr**2, 0.0))})
+
+    def body_budget(self, body, column="speed_kms"):
+        """Median and 16th/84th percentiles of ``column`` for every membership definition."""
+        rows = {}
+        for tag in MEMBERSHIPS:
+            q = np.percentile(self.relative_to_barycentre(body, tag)[column], [16, 50, 84])
+            rows[tag] = dict(p16=q[0], median=q[1], p84=q[2])
+        return pd.DataFrame(rows).T
 
     def summary(self):
         a = self.axes
@@ -166,4 +198,4 @@ def barycentre(source, n=1000, seed=2000, sigmas: Optional[dict] = None, members
     df = build_cloud(m, r, v, membership)
     m0, r0, v0 = phase_space([base], zero)
     (rn, vn) = _bc(m0, r0, v0, MEMBERSHIPS[membership])
-    return Result(df, rn[0], vn[0], name, n, seed, membership, sig)
+    return Result(df, rn[0], vn[0], name, n, seed, membership, sig, m, r, v)
